@@ -1,0 +1,25 @@
+.popup__container {
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    flex-direction: column;
+    z-index: 5;
+    width: 430px;
+    gap: 40px;
+    position:fixed;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    background-color: white;
+    color: #000;
+    padding: 36px;
+    box-sizing: border-box;
+    border-radius: 10px;
+}
+
+@media (max-width: 770px) {
+    .popup__container {
+        padding: 25px;
+        width: 87%;
+    }
+}
