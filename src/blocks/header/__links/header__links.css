@@ -1,0 +1,8 @@
+.header__links {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    /* flex-direction: row;
+    flex-wrap: nowrap; */
+    gap: 30px;
+}

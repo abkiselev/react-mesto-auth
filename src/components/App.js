@@ -7,11 +7,16 @@ import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import DeleteCardPopup from './DeleteCardPopup';
+import ProtectedRoute from './ProtectedRoute';
+import Login from './Login';
+import Register from './Register';
 import api from '../utils/Api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import { Route, Switch, Redirect } from "react-router-dom";
 
 function App() {
     const [currentUser, setCurrentUser] = useState([]);
+    const [loggedIn, setLoggedIn] = useState(false);
 
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
     const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
@@ -153,9 +158,16 @@ function App() {
     return (
         <div className="container">
             <CurrentUserContext.Provider value={currentUser}>
+
                 <Header />
 
-                <Main
+                <Switch>
+
+                    <ProtectedRoute
+                    exact
+                    path="/"
+                    component={Main}
+                    loggedIn={loggedIn}
                     cards={cards}
                     onCardLike={handleCardLike}
                     onCardDelete={handleDeleteButtonClick}
@@ -163,44 +175,79 @@ function App() {
                     onAddPlace={handleAddPlaceClick}
                     onEditAvatar={handleEditAvatarClick}
                     onCardClick={handleCardClick}
-                />
+                    />
 
-                <Footer />
 
-                <EditProfilePopup
-                    isOpen={isEditProfilePopupOpen}
-                    onClose={closeAllPopups}
-                    onUpdateUser={handleUpdateUser}
-                    submitButtonText={submitButtonText}
-                />                 
+                                        
+                    <Route path="/sign-in">
+                        <Login loggedIn={loggedIn} />
+                    </Route>
 
-                <EditAvatarPopup
-                    isOpen={isEditAvatarPopupOpen}
-                    onClose={closeAllPopups}
-                    onUpdateAvatar={handleUpdateAvatar}
-                    submitButtonText={submitButtonText}
-                />
+                    <Route path='/sign-up'>
+                        <Register loggedIn={loggedIn} />
+                    </Route>
 
-                <AddPlacePopup
-                    isOpen={isAddPlacePopupOpen}
-                    onClose={closeAllPopups}
-                    onAddPlace={handleAddPlaceSubmit}
-                    submitButtonText={submitButtonText}
-                />
 
-                <DeleteCardPopup
-                    selectedCard={selectedCard}
-                    isOpen={isDeleteCardPopupOpen}
-                    onClose={closeAllPopups}
-                    onDeleteCard={handleCardDelete}
-                    submitButtonText={submitDeleteButtonText}
-                />
+                    <Route exact path="/">
+                        {loggedIn ? (
+                            <Redirect to="/" />
+                        ) : (
+                            <Redirect to="/sign-in" />
+                        )}
+                    </Route>
 
-                <ImagePopup
-                    selectedCard={selectedCard}
-                    isOpen={isCardPopupOpen}
-                    onClose={closeAllPopups}
-                />
+                </Switch>
+
+
+                
+
+                {loggedIn && (
+                    <>
+                        <Footer />
+
+                        <EditProfilePopup
+                        loggedIn={loggedIn}
+                        isOpen={isEditProfilePopupOpen}
+                        onClose={closeAllPopups}
+                        onUpdateUser={handleUpdateUser}
+                        submitButtonText={submitButtonText}
+                        />                 
+        
+                        <EditAvatarPopup
+                        loggedIn={loggedIn}
+                        isOpen={isEditAvatarPopupOpen}
+                        onClose={closeAllPopups}
+                        onUpdateAvatar={handleUpdateAvatar}
+                        submitButtonText={submitButtonText}
+                        />
+        
+                        <AddPlacePopup
+                        loggedIn={loggedIn}
+                        isOpen={isAddPlacePopupOpen}
+                        onClose={closeAllPopups}
+                        onAddPlace={handleAddPlaceSubmit}
+                        submitButtonText={submitButtonText}
+                        />
+        
+                        <DeleteCardPopup
+                        loggedIn={loggedIn}
+                        selectedCard={selectedCard}
+                        isOpen={isDeleteCardPopupOpen}
+                        onClose={closeAllPopups}
+                        onDeleteCard={handleCardDelete}
+                        submitButtonText={submitDeleteButtonText}
+                        />
+        
+                        <ImagePopup
+                        loggedIn={loggedIn}
+                        selectedCard={selectedCard}
+                        isOpen={isCardPopupOpen}
+                        onClose={closeAllPopups}
+                        />
+                    </>
+                    )}
+
+                
 
             </CurrentUserContext.Provider>
         </div>

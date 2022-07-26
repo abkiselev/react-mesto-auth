@@ -1,8 +1,21 @@
-function PopupWithForm(props) {
+import Forma from "./Forma";
+
+function PopupWithForm(props, loggedIn) {
 
     return (
             <section id={`${props.name}-popup`} className={`popup popup_type_${props.name} ${props.isOpen && 'popup_active'}`}>
-                <div className="popup__container">
+
+                <Forma 
+                loggedIn={loggedIn} 
+                children={props.children} 
+                title={props.title} name={props.name} 
+                onSubmit={props.onSubmit} 
+                isFormValid={props.isFormValid} 
+                submitButtonText={props.submitButtonText} 
+                onClose={props.onClose} 
+                />
+
+                {/* <div className="popup__container">
                     <h2 className="popup__title">
                     {`${props.title}`}
                     </h2>
@@ -11,24 +24,10 @@ function PopupWithForm(props) {
                         <button type="submit" className={`popup__button ${!props.isFormValid && 'popup__button_disabled'}`}>{props.submitButtonText}</button>
                     </form>
                     <button className="popup__close" type="button" onClick={props.onClose} />
-                </div>
+                </div> */}
                 <div className="popup__bg" onClick={props.onClose} />
             </section>
     );
 }
 
 export default PopupWithForm;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
