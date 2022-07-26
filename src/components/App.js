@@ -40,6 +40,11 @@ function App(props) {
 
 
     useEffect(() => {
+        tokenCheck()
+    }, [])
+
+
+    useEffect(() => {
         api.getInitialCards()
             .then(res =>{
                 setInitialCards(res)
@@ -127,7 +132,6 @@ function App(props) {
         
         apiAuth.register({ password, email })
             .then(res => {
-                console.log('result, ', res);
                 setStatusRegister(true);
                 setRegistrationMessage('Вы успешно зарегистрировались!');
                 setIsRegistrationPopupOpen(true);
@@ -145,6 +149,41 @@ function App(props) {
                 setSubmitRegistrationButtonText("Зарегистрироваться");
             })
     }
+
+    function handleLogin({ password, email }) {
+        setSubmitSignInButtonText("Вход...");
+        console.log({ password, email });
+        
+        apiAuth.login({ password, email })
+            .then(res => {
+                setLoggedIn(true)
+                localStorage.setItem('token', res.token);
+                props.history.push('/')
+            })
+            .catch(err => console.log(`${err.message}, Что-то пошло не так, попробуйте заново`))
+            .finally(() => {
+                setSubmitSignInButtonText("Войти");
+            })
+    }
+
+    function tokenCheck(){
+        if (localStorage.getItem('token')){
+            const jwt = localStorage.getItem('token');
+
+        apiAuth.checkToken(jwt)
+            .then(res => {
+                setLoggedIn(true)
+                props.history.push('/')
+            })
+            .catch(err => console.log(`${err.message}, Что-то пошло не так, попробуйте заново`))
+        }
+    }
+
+    // function signOut(){        
+    //     localStorage.removeItem('token');
+    //     props.history.push('/sign-in')       
+    // }
+
 
     function handleEditProfileClick() {
         setIsEditProfilePopupOpen(true)
@@ -192,13 +231,12 @@ function App(props) {
         
     }
 
-    // console.log(props.history);
 
     return (
         <div className="container">
             <CurrentUserContext.Provider value={currentUser}>
 
-                <Header />
+                <Header loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>
 
                 <Switch>
 
@@ -219,7 +257,7 @@ function App(props) {
 
                                         
                     <Route path="/sign-in">
-                        <Login loggedIn={loggedIn} submitSignInButtonText={submitSignInButtonText} />
+                        <Login loggedIn={loggedIn} onLogin={handleLogin} submitSignInButtonText={submitSignInButtonText} />
                     </Route>
 
                     <Route path='/sign-up'>

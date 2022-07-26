@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
 import UseValidation from '../hooks/UseValidation';
 import Forma from './Forma';
-import { Link } from "react-router-dom";
 
-function Login({ onAddPlace, submitButtonText, loggedIn, submitSignInButtonText }) {
+function Login({ submitSignInButtonText, loggedIn, onLogin }) {
     const { isFormValid, values, handleValues, errors, setInitialValues } = UseValidation();
     
     useEffect(() => {
@@ -13,7 +12,7 @@ function Login({ onAddPlace, submitButtonText, loggedIn, submitSignInButtonText 
 
     function handleSubmit(e) {
         e.preventDefault();     
-        onAddPlace({ email: values.email, pass: values.pass});
+        onLogin({ password: values.pass, email: values.email });
     } 
 
 
@@ -62,7 +61,6 @@ function Login({ onAddPlace, submitButtonText, loggedIn, submitSignInButtonText 
         </Forma>
         
         </>
-        
     );
 }
 

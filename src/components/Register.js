@@ -3,7 +3,7 @@ import UseValidation from '../hooks/UseValidation';
 import Forma from './Forma';
 import { Link } from "react-router-dom";
 
-function Register({ isOpen, onClose, submitRegistrationButtonText, loggedIn, onRegister }) {
+function Register({ submitRegistrationButtonText, loggedIn, onRegister }) {
     const { isFormValid, values, handleValues, errors, setInitialValues } = UseValidation();
     
     useEffect(() => {

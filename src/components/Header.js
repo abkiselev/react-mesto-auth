@@ -1,11 +1,17 @@
 import logo from '../images/logo.svg';
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, withRouter } from "react-router-dom";
 import { useState } from "react";
 
-function Header() {
+function Header(props) {
     let location = useLocation();
 
     const [isBurgerOpen, setIsBurgerOpen] = useState(false);
+
+    function signOut(){        
+        props.setLoggedIn(false)
+        localStorage.removeItem('token');
+        props.history.push('/sign-in')       
+    }
 
     return (
         <>
@@ -22,7 +28,7 @@ function Header() {
                             : <div className="header__loggedin">
                                 <nav className={`${'header__loggedin_links'} ${isBurgerOpen && 'header__loggedin_links_visible'}`}>
                                     <p className="header__email">email@mail.com</p> 
-                                    <Link className="header__link header__link_out" to='/'>Выйти</Link>
+                                    <Link className="header__link header__link_out" to='#' onClick={signOut}>Выйти</Link>
                                 </nav>
                                 
                                 <label htmlFor='burger' className="burger" >
@@ -39,4 +45,4 @@ function Header() {
     );
 }
 
-export default Header;
+export default withRouter(Header);

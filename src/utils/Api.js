@@ -88,6 +88,29 @@ class Api {
     })
     .then(res => this._getResponseData(res))
   }
+
+  login({ password, email }) {
+    return fetch(`${this._url}/signin`, {
+      method: 'POST',
+      headers: this._headers,
+      body: JSON.stringify({
+        password,
+        email
+      })
+    })
+    .then(res => this._getResponseData(res))
+  }
+
+  checkToken(token) {
+    return fetch(`${this._url}/users/me`, {
+      method: 'GET',
+      headers: {
+        ...this._headers,
+        "Authorization": `Bearer ${token}`
+      }
+    })
+    .then(res => this._getResponseData(res))
+  }
   
 }
 
