@@ -1,7 +1,7 @@
 import okImg from '../images/ok.svg';
 import problemImg from '../images/problem.svg';
 
-function PopupRegister(props) {
+function InfoTooltip(props) {
 
     return (
             <section id={'popup'} className={`popup ${props.isOpen && 'popup_active'}`}>
@@ -19,4 +19,4 @@ function PopupRegister(props) {
     );
 }
 
-export default PopupRegister;
+export default InfoTooltip;

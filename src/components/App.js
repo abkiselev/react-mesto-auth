@@ -13,11 +13,12 @@ import Register from './Register';
 import { api, apiAuth } from '../utils/Api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import { Route, Switch, Redirect, withRouter } from "react-router-dom";
-import PopupRegister from './PopupRegister';
+import InfoTooltip from './InfoTooltip';
 
 function App(props) {
     const [currentUser, setCurrentUser] = useState([]);
     const [loggedIn, setLoggedIn] = useState(false);
+    const [userEmail, setUserEmail] = useState('');
 
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
     const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
@@ -152,12 +153,12 @@ function App(props) {
 
     function handleLogin({ password, email }) {
         setSubmitSignInButtonText("Вход...");
-        console.log({ password, email });
         
         apiAuth.login({ password, email })
             .then(res => {
                 setLoggedIn(true)
                 localStorage.setItem('token', res.token);
+                setUserEmail(email)
                 props.history.push('/')
             })
             .catch(err => console.log(`${err.message}, Что-то пошло не так, попробуйте заново`))
@@ -179,10 +180,6 @@ function App(props) {
         }
     }
 
-    // function signOut(){        
-    //     localStorage.removeItem('token');
-    //     props.history.push('/sign-in')       
-    // }
 
 
     function handleEditProfileClick() {
@@ -236,7 +233,7 @@ function App(props) {
         <div className="container">
             <CurrentUserContext.Provider value={currentUser}>
 
-                <Header loggedIn={loggedIn} setLoggedIn={setLoggedIn}/>
+                <Header loggedIn={loggedIn} setLoggedIn={setLoggedIn} userEmail={userEmail}/>
 
                 <Switch>
 
@@ -324,7 +321,7 @@ function App(props) {
                     </>
                     )}
 
-                <PopupRegister
+                <InfoTooltip
                 loggedIn={loggedIn}
                 
                 statusRegister={statusRegister}

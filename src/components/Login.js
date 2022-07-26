@@ -17,8 +17,6 @@ function Login({ submitSignInButtonText, loggedIn, onLogin }) {
 
 
     return (
-        <>
-        
         <Forma
                 loggedIn={loggedIn}
                 onSubmit={handleSubmit}
@@ -59,8 +57,6 @@ function Login({ submitSignInButtonText, loggedIn, onLogin }) {
             </fieldset>
                         
         </Forma>
-        
-        </>
     );
 }
 

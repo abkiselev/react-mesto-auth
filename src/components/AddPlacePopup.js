@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import Popup from './Popup';
 import UseValidation from '../hooks/UseValidation';
-import Forma from './Forma';
 
 function AddPlacePopup({ isOpen, onClose, onAddPlace, submitButtonText }) {
     const { isFormValid, values, handleValues, errors, setInitialValues } = UseValidation();
