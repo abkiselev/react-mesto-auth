@@ -1,6 +1,6 @@
 import Forma from "./Forma";
 
-function PopupWithForm(props, loggedIn) {
+function Popup(props, loggedIn) {
 
     return (
             <section id={`${props.name}-popup`} className={`popup popup_type_${props.name} ${props.isOpen && 'popup_active'}`}>
@@ -30,4 +30,4 @@ function PopupWithForm(props, loggedIn) {
     );
 }
 
-export default PopupWithForm;
+export default Popup;

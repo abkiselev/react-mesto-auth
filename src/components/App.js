@@ -10,26 +10,33 @@ import DeleteCardPopup from './DeleteCardPopup';
 import ProtectedRoute from './ProtectedRoute';
 import Login from './Login';
 import Register from './Register';
-import api from '../utils/Api';
+import { api, apiAuth } from '../utils/Api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
-import { Route, Switch, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect, withRouter } from "react-router-dom";
+import PopupRegister from './PopupRegister';
 
-function App() {
+function App(props) {
     const [currentUser, setCurrentUser] = useState([]);
-    const [loggedIn, setLoggedIn] = useState(true);
+    const [loggedIn, setLoggedIn] = useState(false);
 
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
     const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
     const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
     const [isDeleteCardPopupOpen, setIsDeleteCardPopupOpen] = useState(false);
-
+    
     const [selectedCard, setSelectedCard] = useState({});
     const [isCardPopupOpen, setIsCardPopupOpenState] = useState(false);
-
+    
     const [cards, setInitialCards] = useState([]);
-
+    
     const [submitButtonText, setSubmitButtonText] = useState('Сохранить');
     const [submitDeleteButtonText, setSubmitDeleteButtonText] = useState('Да');
+    const [submitRegistrationButtonText, setSubmitRegistrationButtonText] = useState('Зарегистрироваться');
+    const [submitSignInButtonText, setSubmitSignInButtonText] = useState('Войти');
+    
+    const [statusRegister, setStatusRegister] = useState(false);
+    const [isRegistrationPopupOpen, setIsRegistrationPopupOpen] = useState(false);
+    const [registrationMessage, setRegistrationMessage] = useState('');
 
 
     useEffect(() => {
@@ -115,6 +122,30 @@ function App() {
             })
     }
 
+    function handleRegister({ password, email }) {
+        setSubmitRegistrationButtonText("Регистрация...");
+        
+        apiAuth.register({ password, email })
+            .then(res => {
+                console.log('result, ', res);
+                setStatusRegister(true);
+                setRegistrationMessage('Вы успешно зарегистрировались!');
+                setIsRegistrationPopupOpen(true);
+            })
+            .catch(err => {return err})
+            .then(err => {
+                if(err.error) {
+                    setRegistrationMessage(`${err.error}`)
+                } else setRegistrationMessage('Что-то пошло не так. Попробуйте еще раз.');
+                    
+                setIsRegistrationPopupOpen(true);
+                
+            })
+            .finally(() => {
+                setSubmitRegistrationButtonText("Зарегистрироваться");
+            })
+    }
+
     function handleEditProfileClick() {
         setIsEditProfilePopupOpen(true)
     }
@@ -151,9 +182,17 @@ function App() {
             setIsCardPopupOpenState(false)
             setSelectedCard({}) 
         }
+
+        if(statusRegister && isRegistrationPopupOpen) {
+            setIsRegistrationPopupOpen(false);
+            setStatusRegister(false);
+            setSubmitRegistrationButtonText('');
+            props.history.push('/sign-in')
+        } else {setIsRegistrationPopupOpen(false)}
         
     }
 
+    // console.log(props.history);
 
     return (
         <div className="container">
@@ -180,11 +219,11 @@ function App() {
 
                                         
                     <Route path="/sign-in">
-                        <Login loggedIn={loggedIn} />
+                        <Login loggedIn={loggedIn} submitSignInButtonText={submitSignInButtonText} />
                     </Route>
 
                     <Route path='/sign-up'>
-                        <Register loggedIn={loggedIn} />
+                        <Register loggedIn={loggedIn} onRegister={handleRegister} submitRegistrationButtonText={submitRegistrationButtonText}/>
                     </Route>
 
 
@@ -247,6 +286,15 @@ function App() {
                     </>
                     )}
 
+                <PopupRegister
+                loggedIn={loggedIn}
+                
+                statusRegister={statusRegister}
+                registrationMessage={registrationMessage}
+                isOpen={isRegistrationPopupOpen}
+                onClose={closeAllPopups}
+                />
+
                 
 
             </CurrentUserContext.Provider>
@@ -254,4 +302,4 @@ function App() {
     );
 }
 
-export default App;
+export default withRouter(App);

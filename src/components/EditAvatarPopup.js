@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import PopupWithForm from './PopupWithForm';
+import Popup from './Popup';
 import UseValidation from '../hooks/UseValidation';
 
 function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, submitButtonText}) {  
@@ -20,7 +20,7 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, submitButtonText}) {
 
 
     return (
-        <PopupWithForm
+        <Popup
                     onSubmit={handleSubmit}
                     onClose={onClose}
                     isOpen={isOpen}
@@ -46,7 +46,7 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, submitButtonText}) {
                         <p className="popup__error edit-avatar-url-error">{errors.avatar}</p>
                     </fieldset>
                 
-                </PopupWithForm>
+                </Popup>
     );
 }
 

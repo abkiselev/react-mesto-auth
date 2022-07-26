@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
-import PopupWithForm from './PopupWithForm';
+import Popup from './Popup';
 import UseValidation from '../hooks/UseValidation';
 
 function EditProfilePopup({ isOpen, onClose, onUpdateUser, submitButtonText }) {
@@ -36,7 +36,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser, submitButtonText }) {
 
 
     return (
-        <PopupWithForm
+        <Popup
                     onSubmit={handleSubmit}
                     onClose={onClose}
                     isOpen={isOpen}
@@ -78,7 +78,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser, submitButtonText }) {
 
                     </fieldset>
 
-                </PopupWithForm>
+                </Popup>
     );
 }
 

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
-import PopupWithForm from './PopupWithForm';
+import Popup from './Popup';
 import UseValidation from '../hooks/UseValidation';
+import Forma from './Forma';
 
 function AddPlacePopup({ isOpen, onClose, onAddPlace, submitButtonText }) {
     const { isFormValid, values, handleValues, errors, setInitialValues } = UseValidation();
@@ -19,7 +20,7 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace, submitButtonText }) {
 
 
     return (
-        <PopupWithForm
+        <Popup
                     onSubmit={handleSubmit}
                     onClose={onClose}
                     isOpen={isOpen}
@@ -27,8 +28,8 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace, submitButtonText }) {
                     title='Новое место'
                     submitButtonText={submitButtonText}
                     isFormValid={isFormValid}
-                >       
-                    
+                > 
+
                 <fieldset className="popup__inputs">
                     <input 
                     value={values.name || ''}
@@ -58,8 +59,8 @@ function AddPlacePopup({ isOpen, onClose, onAddPlace, submitButtonText }) {
                     />
                     <p className="popup__error edit-foto-url-error">{errors.link}</p>
                 </fieldset>
-                        
-        </PopupWithForm>
+           
+        </Popup>
     );
 }
 

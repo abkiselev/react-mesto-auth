@@ -3,7 +3,7 @@ import UseValidation from '../hooks/UseValidation';
 import Forma from './Forma';
 import { Link } from "react-router-dom";
 
-function Login({ onAddPlace, submitButtonText, loggedIn }) {
+function Login({ onAddPlace, submitButtonText, loggedIn, submitSignInButtonText }) {
     const { isFormValid, values, handleValues, errors, setInitialValues } = UseValidation();
     
     useEffect(() => {
@@ -25,7 +25,7 @@ function Login({ onAddPlace, submitButtonText, loggedIn }) {
                 onSubmit={handleSubmit}
                 name='login'
                 title='Вход'
-                submitButtonText='Войти'
+                submitButtonText={submitSignInButtonText}
                 isFormValid={isFormValid}
             >       
                 

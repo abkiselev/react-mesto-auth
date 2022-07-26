@@ -3,7 +3,7 @@ import UseValidation from '../hooks/UseValidation';
 import Forma from './Forma';
 import { Link } from "react-router-dom";
 
-function Register({ isOpen, onClose, onAddPlace, submitButtonText, loggedIn }) {
+function Register({ isOpen, onClose, submitRegistrationButtonText, loggedIn, onRegister }) {
     const { isFormValid, values, handleValues, errors, setInitialValues } = UseValidation();
     
     useEffect(() => {
@@ -13,7 +13,7 @@ function Register({ isOpen, onClose, onAddPlace, submitButtonText, loggedIn }) {
 
     function handleSubmit(e) {
         e.preventDefault();     
-        onAddPlace({ email: values.email, pass: values.pass});
+        onRegister({ password: values.pass, email: values.email });
     } 
 
 
@@ -25,7 +25,7 @@ function Register({ isOpen, onClose, onAddPlace, submitButtonText, loggedIn }) {
                 onSubmit={handleSubmit}
                 name='login'
                 title='Регистрация'
-                submitButtonText='Зарегистрироваться'
+                submitButtonText={submitRegistrationButtonText}
                 isFormValid={isFormValid}
             >       
                 

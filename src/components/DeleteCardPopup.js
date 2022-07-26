@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import PopupWithForm from './PopupWithForm';
+import Popup from './Popup';
 
 
 function DeleteCardPopup({ isOpen, onClose, selectedCard, onDeleteCard, submitButtonText }) {
@@ -13,7 +13,7 @@ function DeleteCardPopup({ isOpen, onClose, selectedCard, onDeleteCard, submitBu
 
 
     return (
-        <PopupWithForm
+        <Popup
             onSubmit={handleSubmit}
             onClose={onClose}
             isOpen={isOpen}
@@ -23,7 +23,7 @@ function DeleteCardPopup({ isOpen, onClose, selectedCard, onDeleteCard, submitBu
             isFormValid={isFormValid}
         >       
 
-        </PopupWithForm>
+        </Popup>
     );
 }
 

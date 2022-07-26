@@ -6,7 +6,7 @@ class Api {
 
   _getResponseData(res) {
     if (!res.ok) {
-        return Promise.reject(res); 
+        return Promise.reject(res.json()); 
     }
     return res.json();
   }
@@ -76,11 +76,23 @@ class Api {
     })
     .then(res => this._getResponseData(res))
   }
+
+  register({ password, email }) {
+    return fetch(`${this._url}/signup`, {
+      method: 'POST',
+      headers: this._headers,
+      body: JSON.stringify({
+        password,
+        email
+      })
+    })
+    .then(res => this._getResponseData(res))
+  }
   
 }
 
 
-const api = new Api({
+export const api = new Api({
   baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-43',
   headers: {
     authorization: 'a8aa5636-0a20-425d-9a78-90b6247fe762',
@@ -88,4 +100,11 @@ const api = new Api({
   }
 });
 
-export default api;
+export const apiAuth = new Api({
+  baseUrl: 'https://auth.nomoreparties.co',
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+
+// export default api;
