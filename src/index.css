@@ -7,11 +7,18 @@
 @import url(./blocks/logo/logo.css);
 
 @import url(./blocks/header/header.css);
+@import url(./blocks/header/__top/header__top.css);
 @import url(./blocks/header/__links/header__links.css);
 @import url(./blocks/header/__link/header__link.css);
+@import url(./blocks/header/__loggedin/header__loggedin.css);
+@import url(./blocks/header/__loggedin/_links/header__loggedin_links.css);
 @import url(./blocks/header/__link/_place/header__link_place_form.css);
 @import url(./blocks/header/__link/_out/header__link_out.css);
 @import url(./blocks/header/__email/header__email.css);
+
+@import url(./blocks/burger/burger.css);
+@import url(./blocks/burger/__checkbox/burger__checkbox.css);
+@import url(./blocks/burger/__icon/burger__icon.css);
 
 @import url(./blocks/container/container.css);
 

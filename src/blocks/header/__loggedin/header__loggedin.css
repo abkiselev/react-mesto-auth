@@ -1,6 +1,8 @@
-.header__links {
+.header__loggedin {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 30px;
+    gap: 25px;
+    margin: 0;
 }
+

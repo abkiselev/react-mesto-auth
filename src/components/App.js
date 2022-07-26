@@ -16,7 +16,7 @@ import { Route, Switch, Redirect } from "react-router-dom";
 
 function App() {
     const [currentUser, setCurrentUser] = useState([]);
-    const [loggedIn, setLoggedIn] = useState(false);
+    const [loggedIn, setLoggedIn] = useState(true);
 
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
     const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
