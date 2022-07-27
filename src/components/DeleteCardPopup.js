@@ -1,9 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Popup from './Popup';
 
 
-function DeleteCardPopup({ isOpen, onClose, selectedCard, onDeleteCard, submitButtonText }) {
+function DeleteCardPopup({ isOpen, onClose, selectedCard, onDeleteCard, submitButtonText, setSubmitButtonText }) {
     const [isFormValid, setIsFormValid] = useState(true);
+
+    useEffect(() => {
+        if(isOpen){
+            setSubmitButtonText('Да')
+        }    
+    }, [isOpen])
 
     function handleSubmit(e) {
         e.preventDefault();

@@ -3,12 +3,12 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import Popup from './Popup';
 import UseValidation from '../hooks/UseValidation';
 
-function EditProfilePopup({ isOpen, onClose, onUpdateUser, submitButtonText }) {
+function EditProfilePopup({ isOpen, onClose, onUpdateUser, submitButtonText, setSubmitButtonText }) {
     const currentUser = React.useContext(CurrentUserContext);
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
 
-    const { isFormValid, handleValues, errors, setErrors, setValues, setIsFormValid, values } = UseValidation();
+    const { isFormValid, handleValues, errors, setErrors } = UseValidation();
 
     function handleNameChange(e) {
         setName(e.target.value);
@@ -25,6 +25,7 @@ function EditProfilePopup({ isOpen, onClose, onUpdateUser, submitButtonText }) {
             setName(currentUser.name);
             setDescription(currentUser.about);
             setErrors({})
+            setSubmitButtonText('Сохранить')
         }
     }, [currentUser, isOpen]); 
 

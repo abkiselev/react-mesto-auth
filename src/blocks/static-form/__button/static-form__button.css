@@ -9,9 +9,9 @@
     line-height: 22px;
     margin-top: 150px;
     cursor: pointer;
-    transition: all 0.2s ease;
 }
 
 .static-form__button:hover {
+    transition: all 0.2s ease;
     opacity: 0.85;
 }

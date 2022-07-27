@@ -2,12 +2,13 @@ import React, { useEffect, useRef } from 'react';
 import Popup from './Popup';
 import UseValidation from '../hooks/UseValidation';
 
-function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, submitButtonText}) {  
+function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, submitButtonText, setSubmitButtonText }) {  
     const inputRef = useRef();    
     const { isFormValid, values, handleValues, errors, setInitialValues } = UseValidation(); 
 
     useEffect(() => {
         if(isOpen){
+            setSubmitButtonText('Сохранить')
             setInitialValues({ avatar: '' })
         }
     }, [isOpen])

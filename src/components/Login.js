@@ -2,10 +2,11 @@ import React, { useEffect } from 'react';
 import UseValidation from '../hooks/UseValidation';
 import Forma from './Forma';
 
-function Login({ submitSignInButtonText, loggedIn, onLogin }) {
+function Login({ submitButtonText, setSubmitButtonText, loggedIn, onLogin }) {
     const { isFormValid, values, handleValues, errors, setInitialValues } = UseValidation();
     
     useEffect(() => {
+        setSubmitButtonText('Войти')
         setInitialValues({email: '', pass: ''}) 
     }, [])
 
@@ -22,7 +23,7 @@ function Login({ submitSignInButtonText, loggedIn, onLogin }) {
                 onSubmit={handleSubmit}
                 name='login'
                 title='Вход'
-                submitButtonText={submitSignInButtonText}
+                submitButtonText={submitButtonText}
                 isFormValid={isFormValid}
             >       
                 
@@ -46,7 +47,7 @@ function Login({ submitSignInButtonText, loggedIn, onLogin }) {
                 name="pass"
                 id="pass"
                 className="static-form__input" 
-                type="text" 
+                type="password" 
                 minLength="6"
                 maxLength="30"
                 placeholder="Пароль" 

@@ -3,10 +3,11 @@ import UseValidation from '../hooks/UseValidation';
 import Forma from './Forma';
 import { Link } from "react-router-dom";
 
-function Register({ submitRegistrationButtonText, loggedIn, onRegister }) {
+function Register({ submitButtonText, setSubmitButtonText, loggedIn, onRegister }) {
     const { isFormValid, values, handleValues, errors, setInitialValues } = UseValidation();
     
     useEffect(() => {
+        setSubmitButtonText('Зарегистрироваться')
         setInitialValues({email: '', pass: ''}) 
     }, [])
 
@@ -25,7 +26,7 @@ function Register({ submitRegistrationButtonText, loggedIn, onRegister }) {
                 onSubmit={handleSubmit}
                 name='login'
                 title='Регистрация'
-                submitButtonText={submitRegistrationButtonText}
+                submitButtonText={submitButtonText}
                 isFormValid={isFormValid}
             >       
                 
@@ -49,7 +50,7 @@ function Register({ submitRegistrationButtonText, loggedIn, onRegister }) {
                 name="pass"
                 id="pass"
                 className="static-form__input" 
-                type="text" 
+                type="password" 
                 minLength="6"
                 maxLength="30"
                 placeholder="Пароль" 
