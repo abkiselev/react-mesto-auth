@@ -7,11 +7,9 @@ function Header(props) {
 
     const [isBurgerOpen, setIsBurgerOpen] = useState(false);
 
-    function signOut(){        
-        props.setLoggedIn(false)
-        localStorage.removeItem('token');
+    function logOut(){
         setIsBurgerOpen(false)
-        props.history.push('/sign-in')       
+        props.signOut()
     }
 
     return (
@@ -29,7 +27,7 @@ function Header(props) {
                             : <div className="header__loggedin">
                                 <nav className={`${'header__loggedin_links'} ${isBurgerOpen && 'header__loggedin_links_visible'}`}>
                                     <p className="header__email">{props.userEmail}</p> 
-                                    <Link className="header__link header__link_out" to='#' onClick={signOut}>Выйти</Link>
+                                    <button className="header__link header__link_out" to='#' onClick={logOut}>Выйти</button>
                                 </nav>
                                 
                                 <label htmlFor='burger' className="burger" >

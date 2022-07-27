@@ -2,11 +2,12 @@ import React, { useEffect } from 'react';
 import Popup from './Popup';
 import UseValidation from '../hooks/UseValidation';
 
-function AddPlacePopup({ isOpen, onClose, onAddPlace, submitButtonText }) {
+function AddPlacePopup({ isOpen, onClose, onAddPlace, submitButtonText, setSubmitButtonText }) {
     const { isFormValid, values, handleValues, errors, setInitialValues } = UseValidation();
     
     useEffect(() => {
         if(isOpen){
+            setSubmitButtonText('Сохранить')
             setInitialValues({name: '', link: ''}) 
         }    
     }, [isOpen])

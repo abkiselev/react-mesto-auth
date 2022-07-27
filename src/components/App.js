@@ -12,11 +12,11 @@ import Login from './Login';
 import Register from './Register';
 import { api, apiAuth } from '../utils/Api';
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
-import { Route, Switch, Redirect, withRouter } from "react-router-dom";
+import { Route, Switch, withRouter } from "react-router-dom";
 import InfoTooltip from './InfoTooltip';
 
 function App(props) {
-    const [currentUser, setCurrentUser] = useState([]);
+    const [currentUser, setCurrentUser] = useState({});
     const [loggedIn, setLoggedIn] = useState(false);
     const [userEmail, setUserEmail] = useState('');
 
@@ -30,34 +30,28 @@ function App(props) {
     
     const [cards, setInitialCards] = useState([]);
     
-    const [submitButtonText, setSubmitButtonText] = useState('Сохранить');
-    const [submitDeleteButtonText, setSubmitDeleteButtonText] = useState('Да');
-    const [submitRegistrationButtonText, setSubmitRegistrationButtonText] = useState('Зарегистрироваться');
-    const [submitSignInButtonText, setSubmitSignInButtonText] = useState('Войти');
+    const [submitButtonText, setSubmitButtonText] = useState('');
     
     const [statusRegister, setStatusRegister] = useState(false);
-    const [isRegistrationPopupOpen, setIsRegistrationPopupOpen] = useState(false);
+    const [isInfoToolTipOpen, setIsInfoToolTipOpen] = useState(false);
     const [registrationMessage, setRegistrationMessage] = useState('');
 
 
     useEffect(() => {
-        tokenCheck()
+        checkToken()
     }, [])
 
 
     useEffect(() => {
-        api.getInitialCards()
-            .then(res =>{
-                setInitialCards(res)
-            })
-            .catch(err => console.log(`${err.message}, Что-то пошло не так, попробуйте обновить страницу`));
-    }, [])
-
-    useEffect(() => {
-        api.getProfileInfo()
-            .then(res => setCurrentUser(res))
-            .catch(err => console.log(`${err.message}, Что-то пошло не так, попробуйте обновить страницу`));
-    }, [])
+        if(loggedIn){
+            Promise.all([api.getInitialCards(), api.getProfileInfo()])
+                .then(([cards, info]) => {
+                    setInitialCards(cards)
+                    setCurrentUser(info)
+                })
+                .catch(err => console.log(`${err.message}, Что-то пошло не так, попробуйте обновить страницу`));
+        }
+    }, [loggedIn])
 
 
     function handleCardLike(card) {
@@ -72,16 +66,17 @@ function App(props) {
     
 
     function handleCardDelete(card) {  
-        setSubmitDeleteButtonText("Удаление...");
+        setSubmitButtonText("Удаление...");
 
         api.deleteCard(card._id)
             .then((res) => {
                 setInitialCards((newCards) => newCards.filter((c) => c._id !== card._id));
                 closeAllPopups();
+                setSelectedCard({});
             })
             .catch(err => console.log(`${err.message}, Что-то пошло не так, попробуйте обновить страницу`))
             .finally(() => {
-                setSubmitDeleteButtonText("Да");
+                setSubmitButtonText("Да");
             })
     } 
 
@@ -129,30 +124,25 @@ function App(props) {
     }
 
     function handleRegister({ password, email }) {
-        setSubmitRegistrationButtonText("Регистрация...");
+        setSubmitButtonText("Регистрация...");
         
         apiAuth.register({ password, email })
             .then(res => {
                 setStatusRegister(true);
                 setRegistrationMessage('Вы успешно зарегистрировались!');
-                setIsRegistrationPopupOpen(true);
+                setIsInfoToolTipOpen(true);
             })
-            .catch(err => {return err})
-            .then(err => {
-                if(err.error) {
-                    setRegistrationMessage(`${err.error}`)
-                } else setRegistrationMessage('Что-то пошло не так. Попробуйте еще раз.');
-                    
-                setIsRegistrationPopupOpen(true);
-                
+            .catch(err => {
+                setRegistrationMessage('Что-то пошло не так. Попробуйте еще раз.')
+                setIsInfoToolTipOpen(true);
             })
             .finally(() => {
-                setSubmitRegistrationButtonText("Зарегистрироваться");
+                setSubmitButtonText("Зарегистрироваться");
             })
     }
 
     function handleLogin({ password, email }) {
-        setSubmitSignInButtonText("Вход...");
+        setSubmitButtonText("Вход...");
         
         apiAuth.login({ password, email })
             .then(res => {
@@ -161,23 +151,30 @@ function App(props) {
                 setUserEmail(email)
                 props.history.push('/')
             })
-            .catch(err => console.log(`${err.message}, Что-то пошло не так, попробуйте заново`))
+            .catch(err => alert(`Что-то пошло не так, попробуйте заново`))
             .finally(() => {
-                setSubmitSignInButtonText("Войти");
+                setSubmitButtonText('Войти');
             })
     }
 
-    function tokenCheck(){
+    function checkToken(){
         if (localStorage.getItem('token')){
             const jwt = localStorage.getItem('token');
 
         apiAuth.checkToken(jwt)
             .then(res => {
                 setLoggedIn(true)
+                setUserEmail(res.data.email)
                 props.history.push('/')
             })
-            .catch(err => console.log(`${err.message}, Что-то пошло не так, попробуйте заново`))
+            .catch(err => alert(`Что-то пошло не так, попробуйте заново`))
         }
+    }
+
+    function signOut(){        
+        setLoggedIn(false)
+        localStorage.removeItem('token');
+        props.history.push('/sign-in')       
     }
 
 
@@ -204,28 +201,27 @@ function App(props) {
         setIsDeleteCardPopupOpen(true)
     }
 
-    function closeAllPopups() {
-        isEditProfilePopupOpen && setIsEditProfilePopupOpen(false)
-        isAddPlacePopupOpen && setIsAddPlacePopupOpen(false)
-        isEditAvatarPopupOpen && setIsEditAvatarPopupOpen(false) 
+    function handleCloseImagePopup() {
+        setSelectedCard({});
+        closeAllPopups()
+    }
 
-        if(isDeleteCardPopupOpen){
-            setIsDeleteCardPopupOpen(false)
-            setSelectedCard({}) 
-        }
-
-        if(isCardPopupOpen){
-            setIsCardPopupOpenState(false)
-            setSelectedCard({}) 
-        }
-
-        if(statusRegister && isRegistrationPopupOpen) {
-            setIsRegistrationPopupOpen(false);
+    function handleCloseInfoToolTip() {
+        if(statusRegister && isInfoToolTipOpen) {
+            closeAllPopups()
             setStatusRegister(false);
-            setSubmitRegistrationButtonText('');
+            setSubmitButtonText('');
             props.history.push('/sign-in')
-        } else {setIsRegistrationPopupOpen(false)}
-        
+        } else {closeAllPopups()}
+    }
+
+    function closeAllPopups() {
+        setIsEditProfilePopupOpen(false)
+        setIsAddPlacePopupOpen(false)
+        setIsEditAvatarPopupOpen(false) 
+        setIsDeleteCardPopupOpen(false)
+        setIsCardPopupOpenState(false)
+        setIsInfoToolTipOpen(false)
     }
 
 
@@ -233,7 +229,7 @@ function App(props) {
         <div className="container">
             <CurrentUserContext.Provider value={currentUser}>
 
-                <Header loggedIn={loggedIn} setLoggedIn={setLoggedIn} userEmail={userEmail}/>
+                <Header loggedIn={loggedIn} setLoggedIn={setLoggedIn} userEmail={userEmail} signOut={signOut}/>
 
                 <Switch>
 
@@ -250,24 +246,13 @@ function App(props) {
                     onEditAvatar={handleEditAvatarClick}
                     onCardClick={handleCardClick}
                     />
-
-
                                         
                     <Route path="/sign-in">
-                        <Login loggedIn={loggedIn} onLogin={handleLogin} submitSignInButtonText={submitSignInButtonText} />
+                        <Login loggedIn={loggedIn} onLogin={handleLogin} submitButtonText={submitButtonText} setSubmitButtonText={setSubmitButtonText} />
                     </Route>
 
                     <Route path='/sign-up'>
-                        <Register loggedIn={loggedIn} onRegister={handleRegister} submitRegistrationButtonText={submitRegistrationButtonText}/>
-                    </Route>
-
-
-                    <Route exact path="/">
-                        {loggedIn ? (
-                            <Redirect to="/" />
-                        ) : (
-                            <Redirect to="/sign-in" />
-                        )}
+                        <Register loggedIn={loggedIn} onRegister={handleRegister} submitButtonText={submitButtonText} setSubmitButtonText={setSubmitButtonText} />
                     </Route>
 
                 </Switch>
@@ -285,6 +270,7 @@ function App(props) {
                         onClose={closeAllPopups}
                         onUpdateUser={handleUpdateUser}
                         submitButtonText={submitButtonText}
+                        setSubmitButtonText={setSubmitButtonText}
                         />                 
         
                         <EditAvatarPopup
@@ -293,6 +279,7 @@ function App(props) {
                         onClose={closeAllPopups}
                         onUpdateAvatar={handleUpdateAvatar}
                         submitButtonText={submitButtonText}
+                        setSubmitButtonText={setSubmitButtonText}
                         />
         
                         <AddPlacePopup
@@ -301,6 +288,7 @@ function App(props) {
                         onClose={closeAllPopups}
                         onAddPlace={handleAddPlaceSubmit}
                         submitButtonText={submitButtonText}
+                        setSubmitButtonText={setSubmitButtonText}
                         />
         
                         <DeleteCardPopup
@@ -309,28 +297,27 @@ function App(props) {
                         isOpen={isDeleteCardPopupOpen}
                         onClose={closeAllPopups}
                         onDeleteCard={handleCardDelete}
-                        submitButtonText={submitDeleteButtonText}
+                        submitButtonText={submitButtonText}
+                        setSubmitButtonText={setSubmitButtonText}
                         />
         
                         <ImagePopup
                         loggedIn={loggedIn}
                         selectedCard={selectedCard}
+                        setSelectedCard={setSelectedCard}
                         isOpen={isCardPopupOpen}
-                        onClose={closeAllPopups}
+                        onClose={handleCloseImagePopup}
                         />
                     </>
                     )}
 
                 <InfoTooltip
-                loggedIn={loggedIn}
-                
+                loggedIn={loggedIn}                
                 statusRegister={statusRegister}
                 registrationMessage={registrationMessage}
-                isOpen={isRegistrationPopupOpen}
-                onClose={closeAllPopups}
+                isOpen={isInfoToolTipOpen}
+                onClose={handleCloseInfoToolTip}
                 />
-
-                
 
             </CurrentUserContext.Provider>
         </div>
